@@ -18,7 +18,7 @@ const StudentDashboard = () => {
     }
   }, [user, navigate]);
 
-  return <div>Student Dashboard</div>;
+  return <div>Student Dashboard Hello</div>;
 };
 
 export default StudentDashboard;
