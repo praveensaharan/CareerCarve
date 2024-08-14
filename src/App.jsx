@@ -15,6 +15,9 @@ import Login from "./components/Login";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import Role from "./components/Dashboard/Role";
 import NotExist from "./components/Dashboard/NotExist";
+import StudentForm from "./components/Student/Form";
+import StudentPremiumForm from "./components/Student/Premium";
+import StudentPayment from "./components/Student/Payment";
 
 function App() {
   return (
@@ -38,6 +41,46 @@ function App() {
             </SignedIn>
           }
         />
+
+        <Route
+          path="/payment-checkout"
+          element={
+            <SignedIn>
+              <RoleBasedRoute
+                requiredRole="student"
+                redirectTo="/role"
+                element={<StudentPayment />}
+              />
+            </SignedIn>
+          }
+        />
+
+        <Route
+          path="/student-premium-form"
+          element={
+            <SignedIn>
+              <RoleBasedRoute
+                requiredRole="student"
+                redirectTo="/role"
+                element={<StudentPremiumForm />}
+              />
+            </SignedIn>
+          }
+        />
+
+        <Route
+          path="/student-form"
+          element={
+            <SignedIn>
+              <RoleBasedRoute
+                requiredRole="student"
+                redirectTo="/role"
+                element={<StudentForm />}
+              />
+            </SignedIn>
+          }
+        />
+
         <Route
           path="/teacher-dashboard"
           element={
