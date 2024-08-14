@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.4.1",
+    "antd": "^5.20.1",
     "axios": "^1.7.4",
+    "moment": "^2.30.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0"

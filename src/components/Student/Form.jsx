@@ -1,125 +1,95 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
+import { Form, Input, Select, Button, DatePicker, TimePicker } from "antd";
+import moment from "moment";
 
-const Form = () => {
-  const [formData, setFormData] = useState({
-    time: "",
-    role: "",
-    duration: "",
-    date: "",
-  });
+const { Option } = Select;
 
-  const navigate = useNavigate(); // Initialize useNavigate
+const BookingForm = () => {
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-
-    // Perform form submission logic here (e.g., API call)
-
-    // Navigate to the payment-checkout page after successful submission
+  const handleSubmit = (values) => {
+    console.log("Form submitted:", values);
     navigate("/payment-checkout");
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-semibold mb-4">Booking Form</h2>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white border border-gray-300 rounded-lg p-6 shadow-sm"
-      >
-        <div className="mb-4">
-          <label
-            htmlFor="time"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            Time
-          </label>
-          <input
-            type="time"
-            id="time"
-            name="time"
-            value={formData.time}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="role"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            Role
-          </label>
-          <input
-            type="text"
-            id="role"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="duration"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            Duration
-          </label>
-          <select
-            id="duration"
-            name="duration"
-            value={formData.duration}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-            required
-          >
-            <option value="">Select Duration</option>
-            <option value="30 min">30 min</option>
-            <option value="45 min">45 min</option>
-            <option value="60 min">60 min</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="date"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            Date
-          </label>
-          <input
-            type="datetime-local"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+    <div className="p-8 bg-gray-50 min-h-screen flex justify-center items-center">
+      <div className="w-full max-w-lg bg-white border border-gray-200 rounded-xl shadow-lg p-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Booking Form
+        </h2>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          initialValues={{
+            time: null,
+            role: "",
+            duration: "",
+            date: null,
+          }}
         >
-          Submit
-        </button>
-      </form>
+          <Form.Item
+            label="Time"
+            name="time"
+            rules={[{ required: true, message: "Please select a time" }]}
+            className="mb-6"
+          >
+            <TimePicker className="w-full" format="HH:mm" />
+          </Form.Item>
+
+          <Form.Item
+            label="Role"
+            name="role"
+            rules={[{ required: true, message: "Please select a role" }]}
+            className="mb-6"
+          >
+            <Select className="w-full" placeholder="Select Role">
+              <Option value="E-Commerce">E-Commerce</Option>
+              <Option value="FMCG Sales">FMCG Sales</Option>
+              <Option value="Retail Management">Retail Management</Option>
+              <Option value="Digital Marketing">Digital Marketing</Option>
+              <Option value="Project Management">Project Management</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Duration"
+            name="duration"
+            rules={[{ required: true, message: "Please select a duration" }]}
+            className="mb-6"
+          >
+            <Select className="w-full" placeholder="Select Duration">
+              <Option value="30 min">30 min</Option>
+              <Option value="45 min">45 min</Option>
+              <Option value="60 min">60 min</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Date"
+            name="date"
+            rules={[{ required: true, message: "Please select a date" }]}
+            className="mb-6"
+          >
+            <DatePicker className="w-full" />
+          </Form.Item>
+
+          <Form.Item className="mb-0">
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="w-full py-2 rounded-md"
+            >
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 };
 
-export default Form;
+export default BookingForm;

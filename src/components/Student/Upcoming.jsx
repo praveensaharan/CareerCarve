@@ -1,6 +1,13 @@
 import React from "react";
+import { Card, Badge, Row, Col } from "antd";
+import {
+  ClockCircleOutlined,
+  CalendarOutlined,
+  UserOutlined,
+  IdcardOutlined,
+} from "@ant-design/icons";
+import moment from "moment";
 
-// Demo JSON data with updated format
 const demoData = [
   {
     mentorName: "John Doe",
@@ -9,6 +16,7 @@ const demoData = [
     role: "Digital Marketing",
     orderId: "ORD123456",
   },
+
   {
     mentorName: "Jane Smith",
     duration: "45 min",
@@ -20,37 +28,57 @@ const demoData = [
 
 const Upcoming = () => {
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-semibold mb-4">Upcoming Sessions</h2>
-      {demoData.length > 0 ? (
-        <ul className="space-y-4">
-          {demoData.map((session, index) => (
-            <li
-              key={index}
-              className="bg-white border border-gray-300 rounded-lg p-4 shadow-sm"
-            >
-              <h3 className="text-xl font-medium mb-2">
-                Mentor: {session.mentorName}
-              </h3>
-              <p className="text-gray-700">
-                <strong>Duration:</strong> {session.duration}
-              </p>
-              <p className="text-gray-700">
-                <strong>Date & Time:</strong>{" "}
-                {new Date(session.dateTime).toLocaleString()}
-              </p>
-              <p className="text-gray-700">
-                <strong>Role:</strong> {session.role}
-              </p>
-              <p className="text-gray-700">
-                <strong>Order ID:</strong> {session.orderId}
-              </p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-700">No upcoming sessions.</p>
-      )}
+    <div className="p-4 sm:p-8 bg-gray-200 flex justify-center">
+      <div className="w-full max-w-4xl">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8 text-center">
+          Upcoming Sessions
+        </h2>
+        {demoData.length > 0 ? (
+          <Row gutter={[16, 16]} justify="center">
+            {demoData.map((session, index) => (
+              <Col xs={24} sm={12} lg={12} key={index}>
+                <Badge.Ribbon text="Upcoming" color="green">
+                  <Card
+                    hoverable
+                    className="rounded-2xl shadow-xl"
+                    title={
+                      <div className="flex items-center">
+                        <UserOutlined className="text-blue-500 text-2xl mr-3" />
+                        <span className="text-xl sm:text-2xl font-semibold text-gray-900">
+                          {session.mentorName}
+                        </span>
+                      </div>
+                    }
+                  >
+                    <p className="text-gray-800 flex items-center mb-3">
+                      <ClockCircleOutlined className="text-gray-600 text-lg mr-2" />
+                      <strong className="text-gray-700">Duration:</strong>{" "}
+                      {session.duration}
+                    </p>
+                    <p className="text-gray-800 flex items-center mb-3">
+                      <CalendarOutlined className="text-gray-600 text-lg mr-2" />
+                      <strong className="text-gray-700">Date & Time:</strong>{" "}
+                      {moment(session.dateTime).format("MMMM Do YYYY, h:mm A")}
+                    </p>
+                    <p className="text-gray-800 flex items-center mb-3">
+                      <IdcardOutlined className="text-gray-600 text-lg mr-2" />
+                      <strong className="text-gray-700">Role:</strong>{" "}
+                      {session.role}
+                    </p>
+                    <p className="text-gray-800 flex items-center">
+                      <IdcardOutlined className="text-gray-600 text-lg mr-2" />
+                      <strong className="text-gray-700">Order ID:</strong>{" "}
+                      {session.orderId}
+                    </p>
+                  </Card>
+                </Badge.Ribbon>
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          <p className="text-gray-700 text-center">No upcoming sessions.</p>
+        )}
+      </div>
     </div>
   );
 };
