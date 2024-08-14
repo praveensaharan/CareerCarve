@@ -18,6 +18,8 @@ import NotExist from "./components/Dashboard/NotExist";
 import StudentForm from "./components/Student/Form";
 import StudentPremiumForm from "./components/Student/Premium";
 import StudentPayment from "./components/Student/Payment";
+import TeacherForm from "./components/Teacher/Details";
+import TeacherSetTime from "./components/Teacher/Setime";
 
 function App() {
   return (
@@ -93,6 +95,33 @@ function App() {
             </SignedIn>
           }
         />
+
+        <Route
+          path="/teacher-form"
+          element={
+            <SignedIn>
+              <RoleBasedRoute
+                requiredRole="teacher"
+                redirectTo="/role"
+                element={<TeacherForm />}
+              />
+            </SignedIn>
+          }
+        />
+
+        <Route
+          path="/teacher-settime"
+          element={
+            <SignedIn>
+              <RoleBasedRoute
+                requiredRole="teacher"
+                redirectTo="/role"
+                element={<TeacherSetTime />}
+              />
+            </SignedIn>
+          }
+        />
+
         <Route
           path="/role"
           element={

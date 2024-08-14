@@ -82,7 +82,7 @@ const Mentors = () => {
           <li key={index} className="text-gray-600 mb-1">
             <span className="font-semibold">
               {moment(slot.date).format("dddd, MMMM Do")}:
-            </span>{" "}
+            </span>
             {slot.startTime} - {slot.endTime}
           </li>
         ))}
@@ -100,7 +100,7 @@ const Mentors = () => {
           {demoMentors.map((mentor) => (
             <li
               key={mentor.id}
-              className="bg-white border border-gray-200 rounded-3xl shadow-xl p-8 flex items-center hover:shadow-2xl transition-shadow cursor-pointer transform hover:scale-105 transition-transform duration-300 ease-in-out"
+              className="bg-white border border-gray-200 rounded-3xl shadow-xl p-8 flex items-center hover:shadow-2xl cursor-pointer transform hover:scale-105 transition-transform duration-300 ease-in-out"
               onClick={handleMentorClick}
             >
               <Avatar
