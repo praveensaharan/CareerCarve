@@ -1,15 +1,53 @@
-import React from "react";
-import { useUser } from "@clerk/clerk-react";
+import React, { useEffect, useState } from "react";
+import { useUser, useSession, SignOutButton } from "@clerk/clerk-react"; // Cleaned up imports
 import { useNavigate } from "react-router-dom";
 import Mentors from "../Student/Mentors";
 import Sessions from "../Student/Upcoming";
-import { Button } from "antd";
+import { Button, message } from "antd"; // Added missing import for message
 import { LogoutOutlined, BookOutlined } from "@ant-design/icons";
-import { SignOutButton } from "@clerk/clerk-react";
+import axios from "axios";
 
 const StudentDashboard = () => {
   const { user } = useUser();
+  const { session } = useSession();
   const navigate = useNavigate();
+  const [mentorData, setMentorData] = useState(null); // Added state for mentor data
+  const [error, setError] = useState(null); // Added state for error handling
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (session) {
+        try {
+          const token = await session.getToken();
+          const response = await axios.get(
+            "http://localhost:3000/fetchstudent",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            // Assuming response.data contains the student data
+            setMentorData(response.data); // Update state with the received data
+            if (response.data.result.message === "New student created.") {
+              message.success(response.data.result.message);
+            }
+            // Added success message
+          } else {
+            throw new Error("Failed to fetch student data");
+          }
+        } catch (error) {
+          console.error("Error fetching student data:", error);
+          setError(error.message);
+          message.error("Error fetching student data: " + error.message);
+        }
+      }
+    };
+
+    fetchData();
+  }, [session]);
 
   // Redirect if no user
   if (!user) {

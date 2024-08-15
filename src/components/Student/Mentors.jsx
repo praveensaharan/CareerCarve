@@ -32,8 +32,9 @@ const Mentors = () => {
     fetchMentors();
   }, []);
 
-  const handleMentorClick = () => {
-    navigate("/student-premium-form");
+  const handleMentorClick = (mentorId) => {
+    // Pass the mentor ID as a URL parameter
+    navigate(`/student-premium-form/${mentorId}`);
   };
 
   // Function to format availability into a list of readable strings
@@ -65,7 +66,7 @@ const Mentors = () => {
             <li
               key={mentor.id}
               className="bg-white border border-gray-200 rounded-3xl shadow-xl p-8 flex items-center hover:shadow-2xl cursor-pointer transform hover:scale-105 transition-transform duration-300 ease-in-out"
-              onClick={handleMentorClick}
+              onClick={() => handleMentorClick(mentor.id)} // Pass the mentor ID here
             >
               <Avatar
                 size={80}

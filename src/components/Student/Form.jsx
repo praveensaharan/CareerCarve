@@ -1,17 +1,60 @@
 import React, { useState } from "react";
+import { useSession } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Select, Button, DatePicker, TimePicker } from "antd";
+import {
+  Form,
+  Input,
+  Select,
+  Button,
+  DatePicker,
+  TimePicker,
+  message,
+} from "antd";
 import moment from "moment";
+import axios from "axios";
 
 const { Option } = Select;
 
 const BookingForm = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { session } = useSession(); // Corrected session usage
+  const [loading, setLoading] = useState(false); // Added loading state
 
-  const handleSubmit = (values) => {
-    console.log("Form submitted:", values);
-    navigate("/payment-checkout");
+  const handleSubmit = async (values) => {
+    try {
+      if (session) {
+        setLoading(true);
+        const token = await session.getToken();
+        const response = await axios.post(
+          "http://localhost:3000/payment-checkout",
+          {
+            time: values.time.format("HH:mm"), // Formatting time correctly
+            role: values.role,
+            duration: values.duration,
+            date: values.date.format("YYYY-MM-DD"), // Formatting date correctly
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const paymentid = response.data.paymentid; // Assuming paymentid is returned by the API
+          message.success("Booking successful!");
+          // navigate(`/payment-checkout/${paymentid}`);
+        } else {
+          throw new Error("Failed to book session");
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting booking form:", error);
+      message.error("Error submitting booking form: " + error.message);
+    } finally {
+      setLoading(false); // Ensure loading is stopped after request
+    }
   };
 
   return (
@@ -82,6 +125,7 @@ const BookingForm = () => {
               type="primary"
               htmlType="submit"
               className="w-full py-2 rounded-md"
+              loading={loading} // Added loading state to button
             >
               Submit
             </Button>

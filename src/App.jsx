@@ -58,7 +58,7 @@ function App() {
         />
 
         <Route
-          path="/student-premium-form"
+          path="/student-premium-form/:mentorId"
           element={
             <SignedIn>
               <RoleBasedRoute

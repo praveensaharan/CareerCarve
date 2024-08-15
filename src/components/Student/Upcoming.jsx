@@ -7,36 +7,57 @@ import {
   IdcardOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
+import { useSession } from "@clerk/clerk-react";
 
 const Upcoming = () => {
-  const [session, setSession] = useState([]);
+  const [sessions, setSessions] = useState([]); // Corrected state variable name
+  const [loading, setLoading] = useState(true);
+  const { session } = useSession();
 
   useEffect(() => {
     const fetchMentorData = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/sessionstudent");
-        if (!response.ok) {
-          throw new Error("Failed to fetch mentor data");
+      if (session) {
+        try {
+          const token = await session.getToken();
+          const response = await fetch("http://localhost:3000/sessionstudent", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch mentor data");
+          }
+
+          const data = await response.json();
+          setSessions(data); // Updated state correctly
+        } catch (error) {
+          message.error("Error fetching mentor data: " + error.message);
+        } finally {
+          setLoading(false);
         }
-        const data = await response.json();
-        setSession(data); // Update state with fetched data
-      } catch (error) {
-        message.error("Error fetching mentor data: " + error.message);
       }
     };
 
-    fetchMentorData();
-  }, []);
+    // Delay the fetch by 3 seconds
+    const delayFetch = setTimeout(() => {
+      fetchMentorData();
+    }, 2000);
 
+    // Clear timeout if the component unmounts
+    return () => clearTimeout(delayFetch);
+  }, [session]);
   return (
     <div className="p-4 sm:p-8 bg-gray-200 flex justify-center">
       <div className="w-full max-w-4xl">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8 text-center">
           Upcoming Sessions
         </h2>
-        {session.length > 0 ? (
+        {loading ? (
+          <p className="text-gray-700 text-center">Loading...</p>
+        ) : sessions.length > 0 ? ( // Corrected session to sessions
           <Row gutter={[16, 16]} justify="center">
-            {session.map((sessionItem, index) => (
+            {sessions.map((sessionItem, index) => (
               <Col xs={24} sm={12} lg={12} key={index}>
                 <Badge.Ribbon text="Upcoming" color="green">
                   <Card
