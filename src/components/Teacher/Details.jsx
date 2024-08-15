@@ -25,7 +25,7 @@ const Details = () => {
 
         // Send a POST request to update mentor details on the server
         const response = await axios.post(
-          "http://localhost:3000/updatementor",
+          "https://careercavebackend.vercel.app/updatementor",
           {
             name: values.name,
             roles: values.role, // Ensure 'roles' field matches backend expectations

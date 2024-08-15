@@ -27,7 +27,7 @@ const BookingForm = () => {
         setLoading(true);
         const token = await session.getToken();
         const response = await axios.post(
-          "http://localhost:3000/payment-checkout",
+          "https://careercavebackend.vercel.app/payment-checkout",
           {
             time: values.time.format("HH:mm"), // Formatting time correctly
             role: values.role,

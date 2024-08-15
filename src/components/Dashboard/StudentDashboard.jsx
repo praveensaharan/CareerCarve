@@ -20,7 +20,7 @@ const StudentDashboard = () => {
         try {
           const token = await session.getToken();
           const response = await axios.get(
-            "http://localhost:3000/fetchstudent",
+            "https://careercavebackend.vercel.app/fetchstudent",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
