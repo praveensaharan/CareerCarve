@@ -7,35 +7,24 @@ const { Option } = Select;
 
 const Premium = () => {
   const [mentor, setMentor] = React.useState(null);
-  const [form] = Form.useForm(); // Ant Design form instance
+  const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  // Hardcoded mentor data for demo
-  const mentorData = {
-    id: "2",
-    name: "Bob Smith",
-    availability: [
-      {
-        date: "2024-08-15",
-        startTime: "10:00",
-        endTime: "14:00",
-      },
-      {
-        date: "2024-08-16",
-        startTime: "12:00",
-        endTime: "16:00",
-      },
-      {
-        date: "2024-08-17",
-        startTime: "09:00",
-        endTime: "13:00",
-      },
-    ],
-    roles: ["FMCG Sales", "Retail Management"],
-  };
-
   useEffect(() => {
-    setMentor(mentorData);
+    const fetchMentorData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/getmentor?id=118");
+        if (!response.ok) {
+          throw new Error("Failed to fetch mentor data");
+        }
+        const data = await response.json();
+        setMentor(data);
+      } catch (error) {
+        message.error("Error fetching mentor data: " + error.message);
+      }
+    };
+
+    fetchMentorData();
   }, []);
 
   // Validate form data

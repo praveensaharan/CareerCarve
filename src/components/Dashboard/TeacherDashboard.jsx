@@ -1,28 +1,63 @@
-import React from "react";
-import { useUser } from "@clerk/clerk-react";
+import React, { useEffect, useState } from "react";
+import { useUser, useSession, SignOutButton } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "antd";
-import { CalendarOutlined, SettingOutlined } from "@ant-design/icons";
-import { LogoutOutlined, BookOutlined } from "@ant-design/icons";
-
+import { Button, message } from "antd";
+import {
+  CalendarOutlined,
+  SettingOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
+import axios from "axios";
 import Sessions from "../Teacher/Sessions";
-
 import Available from "../Teacher/Available";
-import { SignOutButton } from "@clerk/clerk-react";
 
 const TeacherDashboard = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+  const { session } = useSession();
+  const [mentorData, setMentorData] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Extracting metadata from the user object
   const name = user?.unsafeMetadata?.name || user?.fullName || "Not Available";
-  const role = user?.unsafeMetadata?.roles?.join(", ") || "Not Available";
+  const role = mentorData?.roles || "Not Available";
 
-  const handleAvaialability = () => {
-    if (user?.unsafeMetadata?.roles) {
+  useEffect(() => {
+    const fetchData = async () => {
+      if (session) {
+        try {
+          const token = await session.getToken();
+          const response = await axios.get(
+            "http://localhost:3000/fetchmentor",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            setMentorData(response.data.credits);
+          } else {
+            throw new Error("Failed to fetch mentor data");
+          }
+        } catch (error) {
+          console.error("Error fetching mentor data:", error);
+          setError(error.message);
+          message.error("Error fetching mentor data: " + error.message);
+        }
+      }
+    };
+
+    fetchData();
+  }, [session]);
+
+  const handleAvailability = () => {
+    // if (user?.unsafeMetadata?.roles)
+    if (mentorData?.roles) {
       navigate("/teacher-settime");
     } else {
       navigate("/teacher-form");
+      message.error("First Choose Your Roles");
     }
   };
 
@@ -37,13 +72,15 @@ const TeacherDashboard = () => {
           <h1 className="text-3xl font-extrabold tracking-tight">
             Mentor Dashboard
           </h1>
-          <Button
-            type="primary"
-            icon={<LogoutOutlined />}
-            className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition duration-200 transform hover:scale-105"
-          >
-            <SignOutButton />
-          </Button>
+          <SignOutButton>
+            <Button
+              type="primary"
+              icon={<LogoutOutlined />}
+              className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition duration-200 transform hover:scale-105"
+            >
+              Sign Out
+            </Button>
+          </SignOutButton>
         </div>
       </header>
       <main className="flex-1 container mx-auto px-6 py-8">
@@ -54,7 +91,7 @@ const TeacherDashboard = () => {
           <div className="space-y-4">
             <p className="text-gray-600">
               <strong>Email:</strong>{" "}
-              {user?.primaryEmailAddress.emailAddress || "Not Available"}
+              {user?.primaryEmailAddress?.emailAddress || "Not Available"}
             </p>
             <p className="text-gray-600">
               <strong>Name:</strong> {name}
@@ -75,7 +112,7 @@ const TeacherDashboard = () => {
                 </p>
               </div>
               <Button
-                onClick={handleAvaialability}
+                onClick={handleAvailability}
                 type="primary"
                 icon={<CalendarOutlined />}
                 className="bg-green-600 hover:bg-green-700 text-white"
@@ -103,15 +140,16 @@ const TeacherDashboard = () => {
               </Button>
             </div>
           </div>
-          <div className="flex">
-            <div className="mt-10 w-1/2">
+
+          <div className="flex flex-col sm:flex-row">
+            <div className="mt-10 w-full sm:w-1/2">
               <h3 className="text-2xl font-semibold text-gray-800 mb-6">
                 Your Current Availability
               </h3>
               <Available />
             </div>
 
-            <div className="mt-10 w-1/2">
+            <div className="mt-10 w-full sm:w-1/2">
               <h3 className="text-2xl font-semibold text-gray-800 mb-6">
                 Upcoming Sessions
               </h3>

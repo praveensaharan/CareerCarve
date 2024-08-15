@@ -13,7 +13,8 @@ import {
 } from "antd";
 import moment from "moment";
 import { ClockCircleOutlined, CalendarOutlined } from "@ant-design/icons";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useSession } from "@clerk/clerk-react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
@@ -23,6 +24,8 @@ const Setime = () => {
   const [dates, setDates] = useState([]);
   const { user } = useUser();
   const navigate = useNavigate();
+  const { session } = useSession();
+  const [loading, setLoading] = useState(false);
 
   const handleTimeChange = (time, timeString, index, type) => {
     const newDates = [...dates];
@@ -47,7 +50,7 @@ const Setime = () => {
     return start.isBefore(end);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     for (const dateInfo of dates) {
       if (!validateTimes(dateInfo.startTime, dateInfo.endTime)) {
         message.error(
@@ -56,9 +59,41 @@ const Setime = () => {
         return;
       }
     }
-    console.log("Valid Form Values:", dates);
-    message.success("Availability saved successfully!");
-    navigate("/teacher-dashboard");
+    console.log("Form submitted:", dates);
+    setLoading(true);
+
+    try {
+      if (session) {
+        // Retrieve the authentication token from the session
+        const token = await session.getToken();
+
+        // Send a POST request to update mentor details on the server
+        const response = await axios.post(
+          "http://localhost:3000/updatementorsession",
+          {
+            dates, // Correctly send the dates array in the request body
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          // Show a success message and navigate to the dashboard
+          message.success("Availability saved successfully!");
+          navigate("/teacher-dashboard");
+        } else {
+          throw new Error("Failed to update availability");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating availability:", error);
+      message.error("Error updating availability: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -164,6 +199,7 @@ const Setime = () => {
               type="primary"
               onClick={handleSubmit}
               className="w-full py-2 rounded-lg"
+              loading={loading}
             >
               Save Availability
             </Button>

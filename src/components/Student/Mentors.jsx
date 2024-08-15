@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Rate } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import moment from "moment";
+import axios from "axios";
 
 // Function to generate a random color
 const getRandomColor = () => {
@@ -10,65 +11,26 @@ const getRandomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-const demoMentors = [
-  {
-    id: 112,
-    name: "Alice Johnson",
-    availability: [
-      {
-        date: "2024-08-15",
-        startTime: "10:00",
-        endTime: "14:00",
-      },
-      {
-        date: "2024-08-16",
-        startTime: "12:00",
-        endTime: "16:00",
-      },
-    ],
-    roles: "Digital Marketing, E-Commerce",
-    rating: 3,
-  },
-  {
-    id: 117,
-    name: "Bob Smith",
-    availability: [
-      {
-        date: "2024-08-15",
-        startTime: "09:00",
-        endTime: "12:00",
-      },
-      {
-        date: "2024-08-16",
-        startTime: "14:00",
-        endTime: "17:00",
-      },
-    ],
-    roles: "FMCG Sales, Retail Management",
-    rating: 4,
-  },
-  {
-    id: 116,
-    name: "Carol Lee",
-    availability: [
-      {
-        date: "2024-08-17",
-        startTime: "09:00",
-        endTime: "13:00",
-      },
-      {
-        date: "2024-08-18",
-        startTime: "11:00",
-        endTime: "15:00",
-      },
-    ],
-    roles: "Equity Research, Financial Analysis",
-    rating: 4.5,
-  },
-];
-
 const Mentors = () => {
   const navigate = useNavigate();
+  const [mentors, setMentors] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch mentors data from the API
+  useEffect(() => {
+    const fetchMentors = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/getmentors");
+        setMentors(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching mentors:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchMentors();
+  }, []);
 
   const handleMentorClick = () => {
     navigate("/student-premium-form");
@@ -82,7 +44,7 @@ const Mentors = () => {
           <li key={index} className="text-gray-600 mb-1">
             <span className="font-semibold">
               {moment(slot.date).format("dddd, MMMM Do")}:
-            </span>
+            </span>{" "}
             {slot.startTime} - {slot.endTime}
           </li>
         ))}
@@ -95,9 +57,11 @@ const Mentors = () => {
       <h2 className="text-4xl font-extrabold text-gray-900 mb-12 text-center tracking-tight">
         Meet Our Mentors
       </h2>
-      {demoMentors.length > 0 ? (
+      {loading ? (
+        <p className="text-gray-700 text-center">Loading mentors...</p>
+      ) : mentors.length > 0 ? (
         <ul className="flex flex-wrap justify-center gap-8">
-          {demoMentors.map((mentor) => (
+          {mentors.map((mentor) => (
             <li
               key={mentor.id}
               className="bg-white border border-gray-200 rounded-3xl shadow-xl p-8 flex items-center hover:shadow-2xl cursor-pointer transform hover:scale-105 transition-transform duration-300 ease-in-out"

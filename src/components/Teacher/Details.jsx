@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Select, Button, Typography } from "antd";
-import { useUser } from "@clerk/clerk-react";
+import { Form, Input, Select, Button, Typography, message } from "antd";
+import { useUser, useSession } from "@clerk/clerk-react";
+import axios from "axios";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -10,27 +11,54 @@ const Details = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { user } = useUser();
-  const [loading, setLoading] = useState(false); // Loading state
+  const { session } = useSession();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values) => {
     console.log("Form submitted:", values);
-    setLoading(true); // Start loading
+    setLoading(true);
 
     try {
-      // Update the user's metadata with Clerk
-      await user.update({
-        unsafeMetadata: {
-          name: values.name,
-          roles: values.role,
-          role: "teacher",
-        },
-      });
+      if (session) {
+        // Retrieve the authentication token from the session
+        const token = await session.getToken();
 
-      navigate("/teacher-dashboard");
+        // Send a POST request to update mentor details on the server
+        const response = await axios.post(
+          "http://localhost:3000/updatementor",
+          {
+            name: values.name,
+            roles: values.role, // Ensure 'roles' field matches backend expectations
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          // Update the user's metadata with Clerk
+          await user.update({
+            unsafeMetadata: {
+              name: values.name,
+              roles: values.role, // Assuming 'roles' is an array or string as per your design
+              role: "teacher", // Setting the role as 'teacher'
+            },
+          });
+
+          // Show a success message and navigate to the dashboard
+          message.success("Mentor details updated successfully!");
+          navigate("/teacher-dashboard");
+        } else {
+          throw new Error("Failed to update mentor details");
+        }
+      }
     } catch (error) {
-      console.error("Failed to update user metadata:", error);
+      console.error("Error updating mentor details:", error);
+      message.error("Error updating mentor details: " + error.message);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -46,7 +74,7 @@ const Details = () => {
           onFinish={handleSubmit}
           initialValues={{
             name: user?.fullName || "",
-            role: null,
+            role: [],
           }}
         >
           <Form.Item
@@ -81,7 +109,7 @@ const Details = () => {
               type="primary"
               htmlType="submit"
               className="w-full py-2 rounded-md"
-              loading={loading} // Show loading spinner while submitting
+              loading={loading}
             >
               Submit
             </Button>
