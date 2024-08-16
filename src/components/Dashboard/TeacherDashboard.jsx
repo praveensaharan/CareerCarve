@@ -27,7 +27,7 @@ const TeacherDashboard = () => {
         try {
           const token = await session.getToken();
           const response = await axios.get(
-            "https://careercavebackend.vercel.app/fetchmentor",
+            "http://localhost:3000/fetchmentor",
             {
               headers: {
                 Authorization: `Bearer ${token}`,

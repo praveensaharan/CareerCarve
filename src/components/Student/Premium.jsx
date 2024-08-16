@@ -25,7 +25,7 @@ const Premium = () => {
     const fetchMentorData = async () => {
       try {
         const response = await fetch(
-          `https://careercavebackend.vercel.app/getmentor?id=${mentorId}`
+          `http://localhost:3000/getmentor?id=${mentorId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch mentor data");

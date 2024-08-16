@@ -69,7 +69,7 @@ const Setime = () => {
 
         // Send a POST request to update mentor details on the server
         const response = await axios.post(
-          "https://careercavebackend.vercel.app/updatementorsession",
+          "http://localhost:3000/updatementorsession",
           {
             dates, // Correctly send the dates array in the request body
           },

@@ -16,14 +16,11 @@ const Available = () => {
         if (session) {
           const token = await session.getToken();
 
-          const response = await fetch(
-            "https://careercavebackend.vercel.app/getmentordata",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          const response = await fetch("http://localhost:3000/getmentordata", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
           if (!response.ok) {
             throw new Error("Failed to fetch mentor data");

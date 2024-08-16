@@ -20,9 +20,7 @@ const Mentors = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const response = await axios.get(
-          "https://careercavebackend.vercel.app/getmentors"
-        );
+        const response = await axios.get("http://localhost:3000/getmentors");
         setMentors(response.data);
         setLoading(false);
       } catch (error) {
