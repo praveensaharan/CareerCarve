@@ -13,6 +13,8 @@ import moment from "moment";
 import CapthaImage from "../../assets/captcha.png";
 
 const { Title, Text } = Typography;
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const Payment = () => {
           const token = await session.getToken();
 
           const response = await axios.get(
-            `http://localhost:3000/payment?id=${paymentId}`,
+            `${BaseUrl}/payment?id=${paymentId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -67,7 +69,7 @@ const Payment = () => {
         const token = await session.getToken();
 
         await axios.post(
-          `http://localhost:3000/payment-done`,
+          `${BaseUrl}/payment-done`,
           { id: paymentId, check: captchaInput },
           {
             headers: {

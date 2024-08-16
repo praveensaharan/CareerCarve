@@ -7,6 +7,9 @@ import axios from "axios";
 const { Option } = Select;
 const { Title } = Typography;
 
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
+
 const Details = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -25,7 +28,8 @@ const Details = () => {
 
         // Send a POST request to update mentor details on the server
         const response = await axios.post(
-          "http://localhost:3000/updatementor",
+          `${BaseUrl}/updatementor`,
+
           {
             name: values.name,
             roles: values.role, // Ensure 'roles' field matches backend expectations

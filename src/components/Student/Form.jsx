@@ -14,7 +14,8 @@ import moment from "moment";
 import axios from "axios";
 
 const { Option } = Select;
-
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
 const BookingForm = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const BookingForm = () => {
         setLoading(true);
         const token = await session.getToken();
         const response = await axios.post(
-          "http://localhost:3000/payment-checkout",
+          `${BaseUrl}/payment-checkout`,
           {
             time: values.time.format("HH:mm"), // Correctly formatted time
             role: values.role,

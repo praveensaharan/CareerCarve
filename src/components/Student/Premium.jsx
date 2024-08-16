@@ -17,6 +17,9 @@ import axios from "axios"; // Add axios for API requests
 
 const { Option } = Select;
 
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
+
 const Premium = () => {
   const [mentor, setMentor] = useState(null);
   const [form] = Form.useForm();
@@ -29,9 +32,7 @@ const Premium = () => {
   useEffect(() => {
     const fetchMentorData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/getmentor?id=${mentorId}`
-        );
+        const response = await fetch(`${BaseUrl}/getmentor?id=${mentorId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch mentor data");
         }
@@ -141,7 +142,7 @@ const Premium = () => {
 
           // Send a POST request to create a payment
           const response = await axios.post(
-            "http://localhost:3000/payment-checkout-premium",
+            `  ${BaseUrl}/payment-checkout-premium`,
             {
               time: time.format("HH:mm"),
               role,

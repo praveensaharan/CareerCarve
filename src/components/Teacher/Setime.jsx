@@ -19,6 +19,9 @@ import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
+
 const Setime = () => {
   const [form] = Form.useForm();
   const [dates, setDates] = useState([]);
@@ -69,7 +72,7 @@ const Setime = () => {
 
         // Send a POST request to update mentor details on the server
         const response = await axios.post(
-          "http://localhost:3000/updatementorsession",
+          `${BaseUrl}/updatementorsession`,
           {
             dates, // Correctly send the dates array in the request body
           },

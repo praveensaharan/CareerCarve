@@ -5,7 +5,9 @@ import { UserOutlined } from "@ant-design/icons";
 import moment from "moment";
 import axios from "axios";
 
-// Function to generate a random color
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
+
 const getRandomColor = () => {
   const colors = ["#FF5733", "#33C4FF", "#28A745", "#FFC107", "#6F42C1"];
   return colors[Math.floor(Math.random() * colors.length)];
@@ -20,7 +22,7 @@ const Mentors = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/getmentors");
+        const response = await axios.get(`${BaseUrl}/getmentors`);
         setMentors(response.data);
         setLoading(false);
       } catch (error) {
