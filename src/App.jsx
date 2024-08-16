@@ -45,7 +45,7 @@ function App() {
         />
 
         <Route
-          path="/payment-checkout"
+          path="/payment-checkout/:paymentId"
           element={
             <SignedIn>
               <RoleBasedRoute

@@ -18,8 +18,8 @@ const { Option } = Select;
 const BookingForm = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { session } = useSession(); // Corrected session usage
-  const [loading, setLoading] = useState(false); // Added loading state
+  const { session } = useSession();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values) => {
     try {
@@ -29,10 +29,10 @@ const BookingForm = () => {
         const response = await axios.post(
           "http://localhost:3000/payment-checkout",
           {
-            time: values.time.format("HH:mm"), // Formatting time correctly
+            time: values.time.format("HH:mm"), // Correctly formatted time
             role: values.role,
             duration: values.duration,
-            date: values.date.format("YYYY-MM-DD"), // Formatting date correctly
+            date: values.date.format("YYYY-MM-DD"), // Correctly formatted date
           },
           {
             headers: {
@@ -42,18 +42,23 @@ const BookingForm = () => {
         );
 
         if (response.status === 200) {
-          const paymentid = response.data.paymentid; // Assuming paymentid is returned by the API
+          const paymentid = response.data.paymentId; // Ensure the payment ID is returned by the API
           message.success("Booking successful!");
-          // navigate(`/payment-checkout/${paymentid}`);
+          navigate(`/payment-checkout/${paymentid}`);
         } else {
-          throw new Error("Failed to book session");
+          // Handle known error statuses
+          message.error(response.data.error || "An error occurred");
         }
       }
     } catch (error) {
+      // Display API or network errors
       console.error("Error submitting booking form:", error);
-      message.error("Error submitting booking form: " + error.message);
+      message.error(
+        "Error submitting booking form: " +
+          (error.response?.data?.error || error.message)
+      );
     } finally {
-      setLoading(false); // Ensure loading is stopped after request
+      setLoading(false);
     }
   };
 
@@ -90,10 +95,13 @@ const BookingForm = () => {
             className="mb-6"
           >
             <Select className="w-full" placeholder="Select Role">
-              <Option value="E-Commerce">E-Commerce</Option>
+              <Option value="Digital Marketing">Digital Marketing</Option>
               <Option value="FMCG Sales">FMCG Sales</Option>
               <Option value="Retail Management">Retail Management</Option>
-              <Option value="Digital Marketing">Digital Marketing</Option>
+              <Option value="Financial Analysis">Financial Analysis</Option>
+              <Option value="Equity Research">Equity Research</Option>
+              <Option value="Software">Software</Option>
+              <Option value="E-Commerce">E-Commerce</Option>
               <Option value="Project Management">Project Management</Option>
             </Select>
           </Form.Item>
