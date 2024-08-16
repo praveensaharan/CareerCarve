@@ -9,6 +9,9 @@ import {
 import moment from "moment";
 import { useSession } from "@clerk/clerk-react";
 
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
+
 const Upcoming = () => {
   const [sessions, setSessions] = useState([]); // Corrected state variable name
   const [loading, setLoading] = useState(true);
@@ -19,7 +22,7 @@ const Upcoming = () => {
       if (session) {
         try {
           const token = await session.getToken();
-          const response = await fetch("http://localhost:3000/sessionstudent", {
+          const response = await fetch(`${BaseUrl}/sessionstudent`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

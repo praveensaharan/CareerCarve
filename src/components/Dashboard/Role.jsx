@@ -15,7 +15,7 @@ const Role = () => {
         </p>
         <p className="text-gray-600">
           Please contact your administrator or{" "}
-          <a href="/contact" className="text-blue-500 hover:underline">
+          <a href="/" className="text-blue-500 hover:underline">
             request the appropriate access
           </a>
           .

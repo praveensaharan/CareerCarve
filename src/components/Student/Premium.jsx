@@ -12,21 +12,27 @@ import {
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { useUser, useSession } from "@clerk/clerk-react";
+import axios from "axios"; // Add axios for API requests
 
 const { Option } = Select;
+
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
 
 const Premium = () => {
   const [mentor, setMentor] = useState(null);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { session } = useSession();
   const { mentorId } = useParams(); // Get the mentor ID from the URL parameters
+  const [loading, setLoading] = useState(false); // Loading state
+  const [paymentId, setPaymentId] = useState(null); // Store paymentId
 
   useEffect(() => {
     const fetchMentorData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/getmentor?id=${mentorId}`
-        );
+        const response = await fetch(`${BaseUrl}/getmentor?id=${mentorId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch mentor data");
         }
@@ -124,10 +130,47 @@ const Premium = () => {
     );
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     if (validateForm(values)) {
-      console.log("Form submitted with data:", values);
-      navigate("/payment-checkout");
+      setLoading(true);
+      try {
+        const { date, time, role, duration } = values;
+
+        if (session) {
+          // Retrieve the authentication token from the session
+          const token = await session.getToken();
+
+          // Send a POST request to create a payment
+          const response = await axios.post(
+            `  ${BaseUrl}/payment-checkout-premium`,
+            {
+              time: time.format("HH:mm"),
+              role,
+              duration,
+              date: date.format("YYYY-MM-DD"),
+              mentorId,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            setPaymentId(response.data.paymentId);
+            message.success("Booking successful!");
+            navigate(`/payment-checkout/${response.data.paymentId}`);
+          } else {
+            throw new Error("Failed to process payment.");
+          }
+        }
+      } catch (error) {
+        console.error("Error processing payment:", error);
+        message.error("Error: " + error.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -193,20 +236,7 @@ const Premium = () => {
               rules={[{ required: true, message: "Please select a time" }]}
               className="mb-6"
             >
-              <TimePicker
-                className="w-full"
-                format="HH:mm"
-                // minuteStep={15}
-                // disabledHours={() =>
-                //   mentor.availability.map((a) =>
-                //     [...Array(24).keys()].filter(
-                //       (h) =>
-                //         h < a.startTime.split(":")[0] ||
-                //         h > a.endTime.split(":")[0]
-                //     )
-                //   )[0]
-                // }
-              />
+              <TimePicker className="w-full" format="HH:mm" />
             </Form.Item>
 
             <Form.Item
@@ -242,6 +272,7 @@ const Premium = () => {
                 type="primary"
                 htmlType="submit"
                 className="w-full py-3 rounded-full bg-blue-500 hover:bg-blue-600 transition duration-300 ease-in-out"
+                loading={loading} // Show loading spinner
               >
                 Confirm Booking
               </Button>

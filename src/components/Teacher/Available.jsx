@@ -5,6 +5,9 @@ import "react-calendar/dist/Calendar.css";
 import { message } from "antd";
 import { useSession } from "@clerk/clerk-react";
 
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
+
 const Available = () => {
   const [date, setDate] = useState(new Date());
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -16,7 +19,7 @@ const Available = () => {
         if (session) {
           const token = await session.getToken();
 
-          const response = await fetch("http://localhost:3000/getmentordata", {
+          const response = await fetch(`${BaseUrl}/getmentordata`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

@@ -11,6 +11,9 @@ import axios from "axios";
 import Sessions from "../Teacher/Sessions";
 import Available from "../Teacher/Available";
 
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
+
 const TeacherDashboard = () => {
   const { user } = useUser();
   const navigate = useNavigate();
@@ -26,14 +29,11 @@ const TeacherDashboard = () => {
       if (session) {
         try {
           const token = await session.getToken();
-          const response = await axios.get(
-            "http://localhost:3000/fetchmentor",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          const response = await axios.get(`${BaseUrl}/fetchmentor`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
           if (response.status === 200) {
             setMentorData(response.data.credits);

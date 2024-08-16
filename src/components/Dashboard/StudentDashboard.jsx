@@ -7,6 +7,9 @@ import { Button, message } from "antd"; // Added missing import for message
 import { LogoutOutlined, BookOutlined } from "@ant-design/icons";
 import axios from "axios";
 
+const BaseUrl = "https://careercavebackend.vercel.app";
+// const BaseUrl = "http://localhost:3000";
+
 const StudentDashboard = () => {
   const { user } = useUser();
   const { session } = useSession();
@@ -19,14 +22,11 @@ const StudentDashboard = () => {
       if (session) {
         try {
           const token = await session.getToken();
-          const response = await axios.get(
-            "http://localhost:3000/fetchstudent",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          const response = await axios.get(`${BaseUrl}/fetchstudent`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
           if (response.status === 200) {
             // Assuming response.data contains the student data
