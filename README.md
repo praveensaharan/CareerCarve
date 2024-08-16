@@ -91,3 +91,10 @@ Notifications sent via email/SMS for upcoming sessions, payment confirmations, a
 User Support:
 
 Help section or chat support for troubleshooting and queries.
+![image](https://github.com/user-attachments/assets/572af2b6-2370-40d8-9d8b-8729409de3a1)
+![image](https://github.com/user-attachments/assets/c1ecfa70-4ff2-40cb-a49e-0e05af3320b8)
+![image](https://github.com/user-attachments/assets/146fcb00-51c2-4d0c-8070-6dad2159813d)
+![image](https://github.com/user-attachments/assets/461e2433-3db2-49d5-b00c-771cc3e2fa98)
+
+
+
